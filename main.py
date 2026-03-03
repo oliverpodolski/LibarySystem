@@ -11,27 +11,30 @@ def create_file():
         print("File was created")
         main_menu
 
+
+
 def add_book(book, book_id, release_year, author):
-    if not os.path.exists(file_path):               # If there is no file a new file will get created
+    if not os.path.exists(file_path):
         create_file()
         return
     with open(file=file_path, mode="r") as file:
-        try:                                    #If the file has nothing in it a new array
-            data = json.load(file)              # gets created which will be added later to the json
+        try:
+            data = json.load(file)
         except json.JSONDecodeError:
             data = []
-        new_book = {                            #New List with book information
+        new_book = {
             "Book": book,
             "ID": book_id,
             "Release Year": release_year,
             "Author": author
         }
-        data.append(new_book)                   #The List gets appended to the array data
+        data.append(new_book)
 
     with open(file_path, "w") as file:
         json.dump(data, file, indent=4)
         print("Book was added!")
         main_menu()
+
 
 def read_books():
     if not os.path.exists(file_path):
@@ -50,6 +53,7 @@ def read_books():
         for i in range(len(data)):
             print(f"{i}. Book: {data[i]['Book']} Author: {data[i]['Author']} Release Year: {data[i]['Release Year']} ID: {data[i]['ID']}")
     main_menu()
+
 
 
 def main_menu():
