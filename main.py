@@ -9,7 +9,7 @@ def create_file():
     with open(file_path, "w") as file:
         json.dump([], file, indent=4)
         print("File was created")
-        main_menu
+        main_menu()
 
 
 
@@ -33,7 +33,7 @@ def add_book(book, book_id, release_year, author):
     with open(file_path, "w") as file:
         json.dump(data, file, indent=4)
         print("Book was added!")
-        main_menu()
+    main_menu()
 
 
 def read_books():
@@ -45,27 +45,53 @@ def read_books():
         try:
             data = json.load(file)
         except JSONDecodeError:
-            print("There are no books saved in the file or the file is broken")
             data = []
         if not data:
             print("There are no books saved in the file")
-            return
+            return main_menu()
         for i in range(len(data)):
             print(f"{i}. Book: {data[i]['Book']} Author: {data[i]['Author']} Release Year: {data[i]['Release Year']} ID: {data[i]['ID']}")
     main_menu()
 
+def delete_book(remove_book_id):
+    if not os.path.exists(file_path):
+        print("No File was found")
+        create_file()
+        return
+    with open(file_path, "r") as file:
+        gefunden = False
+        try:
+            data = json.load(file)
+        except JSONDecodeError:
+            data = []
+        if not data:
+            print("There are no books saved in the File")
+        for i in range(len(data)):
+            if int(data[i]["ID"]) == int(remove_book_id):
+                print(f"The book: {data[i]["Book"]} was deleted!")
+                del data[i]
+                gefunden = True
+                break
+        if gefunden != True:
+            print(f"There is no book with the ID: {remove_book_id}!")
 
+    with open(file_path, "w") as file:
+        json.dump(data, file, indent=4)
+    main_menu()
 
 def main_menu():
-    main_menu_option = int(input("\nWhat would you like to do?\n1. ADD A BOOK\n2. READ BOOK LIST\n"))
+    main_menu_option = int(input("\nWhat would you like to do?\n1. ADD A BOOK\n2. READ BOOK LIST\n3. REMOVE A BOOK"))
     if main_menu_option == 1:
-        get_name = input("Enter the name of the Book!")
-        get_id = input("Enter the ID")
-        get_release_year = int(input("Enter the release year!"))
-        get_author = input("Enter the Author")
+        get_name = input("Enter the name of the Book: ")
+        get_id = input("Enter the ID: ")
+        get_release_year = int(input("Enter the release year: "))
+        get_author = input("Enter the Author: ")
         add_book(get_name,get_id,get_release_year,get_author)
     elif main_menu_option == 2:
         read_books()
+    elif main_menu_option == 3:
+        get_remove_book_id = int(input("Enter the Book_ID:"))
+        delete_book(get_remove_book_id)
     else:
         print("Enter a valid choice!")
 
