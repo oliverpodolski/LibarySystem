@@ -11,9 +11,7 @@ def create_file():
         print("File was created")
         main_menu()
 
-
-
-def add_book(book, book_id, release_year, author):
+def add_book(book, release_year, author):
     if not os.path.exists(file_path):
         create_file()
         return
@@ -22,9 +20,16 @@ def add_book(book, book_id, release_year, author):
             data = json.load(file)
         except json.JSONDecodeError:
             data = []
+        biggest_number_id = 0
+        for i in range(len(data)):
+            value = data[i]["ID"]
+            if value < biggest_number_id:
+                pass
+            else:
+                biggest_number_id = value
         new_book = {
             "Book": book,
-            "ID": book_id,
+            "ID": biggest_number_id + 1,
             "Release Year": release_year,
             "Author": author
         }
@@ -59,7 +64,7 @@ def delete_book(remove_book_id):
         create_file()
         return
     with open(file_path, "r") as file:
-        gefunden = False
+        found_book = False
         try:
             data = json.load(file)
         except JSONDecodeError:
@@ -68,11 +73,11 @@ def delete_book(remove_book_id):
             print("There are no books saved in the File")
         for i in range(len(data)):
             if int(data[i]["ID"]) == int(remove_book_id):
-                print(f"The book: {data[i]["Book"]} was deleted!")
+                print(f"The book: {data[i]['Book']} was deleted!")
                 del data[i]
                 gefunden = True
                 break
-        if gefunden != True:
+        if found_book != True:
             print(f"There is no book with the ID: {remove_book_id}!")
 
     with open(file_path, "w") as file:
@@ -83,10 +88,9 @@ def main_menu():
     main_menu_option = int(input("\nWhat would you like to do?\n1. ADD A BOOK\n2. READ BOOK LIST\n3. REMOVE A BOOK"))
     if main_menu_option == 1:
         get_name = input("Enter the name of the Book: ")
-        get_id = input("Enter the ID: ")
         get_release_year = int(input("Enter the release year: "))
         get_author = input("Enter the Author: ")
-        add_book(get_name,get_id,get_release_year,get_author)
+        add_book(get_name,get_release_year,get_author)
     elif main_menu_option == 2:
         read_books()
     elif main_menu_option == 3:
