@@ -1,8 +1,6 @@
 import json
 import os
-from dataclasses import dataclass
 from json import JSONDecodeError
-from turtledemo.clock import datum
 
 file_path = "data.json"
 
@@ -109,8 +107,38 @@ def search_for_book(input_text):
             print(f"There was no book or author found with the name: {input_text}")
         main_menu()
 
+def edit_book(edit_book_id):
+    found_edit_book = False
+    if not os.path.exists(file_path):
+        print("No file was found")
+        create_file()
+        return
+    with open(file_path, "r") as file:
+        try:
+            data = json.load(file)
+        except JSONDecodeError:
+            print("There are no books in the file saved!")
+            return main_menu()
+        for i in range(len(data)):
+            if data[i]["ID"] == edit_book_id:
+                get_new_name = input("Enter a new name for the book:\n")
+                get_new_author = input("Enter a new author for the book\n")
+                get_new_relesae_year = int(input("Enter a new release year for the book\n"))
+                data[i]["Book"] = get_new_name
+                data[i]["Author"] = get_new_author
+                data[i]["Release Year"] = get_new_relesae_year
+                found_edit_book = True
+                break
+    if found_edit_book == False:
+        print(f"There is no book with the ID{edit_book_id}")
+    if found_edit_book == True:
+        with open(file_path, "w") as file:
+            json.dump(data, file, indent=4)
+            print("The book was edited!")
+    main_menu()
+
 def main_menu():
-    main_menu_option = int(input("\nWhat would you like to do?\n1. ADD A BOOK\n2. READ BOOK LIST\n3. REMOVE A BOOK\n4. SEARCH FOR A BOOK\n"))
+    main_menu_option = int(input("\nWhat would you like to do?\n1. ADD A BOOK\n2. READ BOOK LIST\n3. REMOVE A BOOK\n4. SEARCH FOR A BOOK\n5. EDIT A BOOK\n"))
     if main_menu_option == 1:
         get_name = input("Enter the name of the Book: ")
         get_release_year = int(input("Enter the release year: "))
@@ -124,6 +152,9 @@ def main_menu():
     elif main_menu_option == 4:
         get_search_text = input("Enter the name of the book or the author you are looking for:\n")
         search_for_book(get_search_text)
+    elif main_menu_option == 5:
+        get_ID_edit_book = int(input("Enter the ID of the book you want to edit:\n"))
+        edit_book(get_ID_edit_book)
     else:
         print("Enter a valid choice!")
 
