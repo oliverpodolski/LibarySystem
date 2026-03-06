@@ -54,6 +54,7 @@ def read_books():
         if not data:
             print("There are no books saved in the file")
             return main_menu()
+        print(f"There are currently {len(data)} books saved")
         for i in range(len(data)):
             print(f"{i}. Book: {data[i]['Book']} Author: {data[i]['Author']} Release Year: {data[i]['Release Year']} ID: {data[i]['ID']}")
     main_menu()
@@ -73,10 +74,15 @@ def delete_book(remove_book_id):
             print("There are no books saved in the File")
         for i in range(len(data)):
             if int(data[i]["ID"]) == int(remove_book_id):
-                print(f"The book: {data[i]['Book']} was deleted!")
-                del data[i]
-                gefunden = True
-                break
+                question_delete = input(f"Are you sure you want to delete the book with the ID: {remove_book_id}? yes/no")
+                if question_delete == "yes":
+                    print(f"The book: {data[i]['Book']} was deleted!")
+                    del data[i]
+                    found_book = True
+                    break
+                else:
+                    main_menu()
+                    break
         if found_book != True:
             print(f"There is no book with the ID: {remove_book_id}!")
 
